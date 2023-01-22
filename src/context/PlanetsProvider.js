@@ -8,14 +8,14 @@ export default function PlanetsProvider({ children }) {
 
   const fetchedData = useFetch('https://swapi.dev/api/planets', getPlanets);
 
-  const { isLoading, error, data } = useMemo(() => ({
+  const { isLoading, error, planets } = useMemo(() => ({
     isLoading: fetchedData.isLoading,
     error: fetchedData.error,
-    data: fetchedData.data,
+    planets: fetchedData.data,
   }), [fetchedData]);
 
   return (
-    <PlanetsContext.Provider value={ { isLoading, error, data } }>
+    <PlanetsContext.Provider value={ { isLoading, error, planets } }>
       {children}
     </PlanetsContext.Provider>
   );
