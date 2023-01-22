@@ -1,11 +1,11 @@
 // inspiration for this hook is a combination from live lectures bellow:
-// https://www.smashingmagazine.com/2020/07/custom-react-hook-fetch-cache-data/
+// https://github.com/tryber/sd-026-a-live-lectures/blob/lecture/frontend/9.3/src/hooks/useFetch.js
 // and the article bellow:
 // https://www.smashingmagazine.com/2020/07/custom-react-hook-fetch-cache-data/
 
 import { useState, useEffect, useRef } from 'react';
 
-function useFetch(url) {
+function useFetch(url, filterData = (data) => (data)) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
   const [data, setData] = useState();
@@ -47,6 +47,7 @@ function useFetch(url) {
       }
     };
     fetchData()
+      .then(filterData)
       .then(setData);
   }, [url]);
 
