@@ -5,6 +5,7 @@ import PlanetsContext from './PlanetsContext';
 
 export default function FilterProvider({ children }) {
   const [nameFilter, setNameFilter] = useState('');
+  const [usingFilter, setUsingFilter] = useState(false);
   const [filteredPlanets, setFilteredPlanets] = useState([]);
   const { planets } = useContext(PlanetsContext);
 
@@ -17,10 +18,11 @@ export default function FilterProvider({ children }) {
     //   if (nameFilter) setFilteredPlanets(byName(planets, nameFilter));
     // }
     if (planets && nameFilter) setFilteredPlanets(byName(planets, nameFilter));
+    setUsingFilter(!!(nameFilter));
   }, [nameFilter]);
 
   return (
-    <FilterContext.Provider value={ { setNameFilter, filteredPlanets } }>
+    <FilterContext.Provider value={ { setNameFilter, filteredPlanets, usingFilter } }>
       {children}
     </FilterContext.Provider>
   );
