@@ -5,10 +5,10 @@
 
 import { useState, useEffect, useRef } from 'react';
 
-function useFetch(url, filterData = (data) => (data)) {
+function useFetch(url, filterData = (data) => (data), initialData = []) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
-  const [data, setData] = useState();
+  const [data, setData] = useState(initialData);
   const cache = useRef({});
 
   useEffect(() => {
