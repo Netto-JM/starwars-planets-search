@@ -5,7 +5,6 @@ import PlanetsContext from './PlanetsContext';
 
 export default function FilterProvider({ children }) {
   const [nameFilter, setNameFilter] = useState('');
-  const [usingFilter, setUsingFilter] = useState(false);
   const [filteredPlanets, setFilteredPlanets] = useState([]);
   const { planets } = useContext(PlanetsContext);
   const [columnValue, setColumnValue] = useState('population');
@@ -29,20 +28,33 @@ export default function FilterProvider({ children }) {
     ))
   );
 
-  useEffect(() => {
-    // if (planets) {
-    //   if (nameFilter) setFilteredPlanets(byName(planets, nameFilter));
-    // }
-    if (planets && nameFilter) setFilteredPlanets(byName(planets, nameFilter));
-    setUsingFilter(!!(nameFilter));
-  }, [nameFilter]);
+  const filterBuNumbers = (SWPlanets, column, comparison, number) => {
+    console.log('column', column);
+    console.log('comparison', comparison);
+    console.log('number', number);
+    // loginc to filter
+    return SWPlanets;
+  };
 
-  const planetsToRender = usingFilter ? filteredPlanets : planets;
+  const byNumbers = (SWPlanets, numFilter) => {
+    const numFilterArr = Object.entries(numFilter);
+    const byNumPlanets = numFilterArr.reduce((thePlanets, filterValues) => (
+      filterBuNumbers(thePlanets, filterValues[0], filterValues[1][0], filterValues[1][1])
+    ), SWPlanets);
+    console.log('to be used: ', numFilter);
+    return byNumPlanets;
+  };
+
+  useEffect(() => {
+    const filteredByName = byName(planets, nameFilter);
+    const filteredByNumbers = byNumbers(filteredByName, numericFilter);
+    setFilteredPlanets(filteredByNumbers);
+  }, [nameFilter, numericFilter, planets]);
 
   const handleFilter = () => {
     setNumericFilter(() => ({
       ...numericFilter,
-      columnValue: [comparisonValue, numberValue],
+      [columnValue]: [comparisonValue, numberValue],
     }));
     console.log(columnValue);
     setColumnOptions((prevState) => {
@@ -53,6 +65,7 @@ export default function FilterProvider({ children }) {
 
   const handleClear = () => {
     if (Object.keys(numericFilter).length === 0) return;
+    console.log(Object.entries(numericFilter));
     setNumericFilter({});
     setColumnOptions(allColumnOptions);
   };
@@ -70,7 +83,7 @@ export default function FilterProvider({ children }) {
   };
   const values = {
     allColumnOptions,
-    planetsToRender,
+    filteredPlanets,
     columnOptions,
     columnValue,
   };
