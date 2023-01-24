@@ -5,6 +5,7 @@ import useFetch from '../hooks/useFetch';
 
 export default function PlanetsProvider({ children }) {
   const getPlanets = ({ results }) => {
+    if (!results) return { planets: [], headings: [] };
     const planets = results.map(({ residents, ...rest }) => (rest));
     const headings = Object.keys(planets[0]).map((planet) => planet.replace('_', ' '));
     return { planets, headings };
