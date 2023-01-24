@@ -28,7 +28,7 @@ export default function FilterProvider({ children }) {
     ))
   );
 
-  const filterBuNumbers = (SWPlanets, column, comparison, number) => {
+  const filterByNumbers = (SWPlanets, column, comparison, number) => {
     console.log('column', column);
     console.log('comparison', comparison);
     console.log('number', number);
@@ -39,7 +39,7 @@ export default function FilterProvider({ children }) {
   const byNumbers = (SWPlanets, numFilter) => {
     const numFilterArr = Object.entries(numFilter);
     const byNumPlanets = numFilterArr.reduce((thePlanets, filterValues) => (
-      filterBuNumbers(thePlanets, filterValues[0], filterValues[1][0], filterValues[1][1])
+      filterByNumbers(thePlanets, filterValues[0], filterValues[1][0], filterValues[1][1])
     ), SWPlanets);
     console.log('to be used: ', numFilter);
     return byNumPlanets;
