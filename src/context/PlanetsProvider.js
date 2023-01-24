@@ -15,8 +15,8 @@ export default function PlanetsProvider({ children }) {
   const { isLoading, error, planets, headings } = useMemo(() => ({
     isLoading: fetchedData.isLoading,
     error: fetchedData.error,
-    planets: fetchedData.data.planets,
-    headings: fetchedData.data.headings,
+    planets: fetchedData.data.planets || [],
+    headings: fetchedData.data.headings || [],
   }), [fetchedData]);
 
   return (
