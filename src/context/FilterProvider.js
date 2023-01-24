@@ -29,11 +29,19 @@ export default function FilterProvider({ children }) {
   );
 
   const filterByNumbers = (SWPlanets, column, comparison, number) => {
-    console.log('column', column);
-    console.log('comparison', comparison);
-    console.log('number', number);
-    // loginc to filter
-    return SWPlanets;
+    const byNumberPlanets = SWPlanets.filter((planet) => {
+      switch (comparison) {
+      case 'maior que':
+        return +planet[column] > +number;
+      case 'menor que':
+        return +planet[column] < +number;
+      case 'igual a':
+        return +planet[column] === +number;
+      default:
+        return true;
+      }
+    });
+    return byNumberPlanets;
   };
 
   const byNumbers = (SWPlanets, numFilter) => {
@@ -41,7 +49,6 @@ export default function FilterProvider({ children }) {
     const byNumPlanets = numFilterArr.reduce((thePlanets, filterValues) => (
       filterByNumbers(thePlanets, filterValues[0], filterValues[1][0], filterValues[1][1])
     ), SWPlanets);
-    console.log('to be used: ', numFilter);
     return byNumPlanets;
   };
 
@@ -56,20 +63,19 @@ export default function FilterProvider({ children }) {
       ...prevState,
       [columnValue]: [comparisonValue, numberValue],
     }));
-    console.log(columnValue);
     setColumnOptions((prevState) => {
       const newOptions = prevState.filter((option) => option !== columnValue);
       return newOptions;
     });
   };
 
-  // functions bellow to be used to remove a single filter
-
-  const handleRemove = (column) => setNumericFilter(({ [column]: bye, ...rest }) => rest);
+  const handleRemove = (column) => {
+    setNumericFilter(({ [column]: bye, ...rest }) => rest);
+    setColumnOptions((prevState) => [...prevState, column]);
+  };
 
   const handleClear = () => {
     if (Object.keys(numericFilter).length === 0) return;
-    console.log(Object.entries(numericFilter));
     setNumericFilter({});
     setColumnOptions(allColumnOptions);
   };
@@ -89,6 +95,8 @@ export default function FilterProvider({ children }) {
     filteredPlanets,
     columnOptions,
     columnValue,
+    numberValue,
+    numericFilter,
   };
 
   const handlers = {
