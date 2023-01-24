@@ -5,7 +5,7 @@ import FilterContext from '../context/FilterContext';
 function Table() {
   const { isLoading, error, headings } = useContext(PlanetsContext);
   const { setters, values } = useContext(FilterContext);
-  const { planetsToRender, columnOptions, columnValue } = values;
+  const { filteredPlanets, columnOptions, columnValue } = values;
   const {
     setNameFilter,
     setColumnValue,
@@ -17,13 +17,11 @@ function Table() {
 
   console.log('to be used:', isLoading, error);
 
-  console.log('planetsToRender', planetsToRender);
-
   const tableHeadings = headings.map((heading) => (
     <th key={ heading }>{heading}</th>
   ));
 
-  const tableData = planetsToRender.map((planet) => {
+  const tableData = filteredPlanets.map((planet) => {
     const data = Object.values(planet);
     const planetData = data.map((value, index) => <td key={ value + index }>{value}</td>);
     return <tr key={ JSON.stringify(data) }>{planetData}</tr>;
