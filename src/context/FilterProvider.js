@@ -52,8 +52,8 @@ export default function FilterProvider({ children }) {
   }, [nameFilter, numericFilter, planets]);
 
   const handleFilter = () => {
-    setNumericFilter(() => ({
-      ...numericFilter,
+    setNumericFilter((prevState) => ({
+      ...prevState,
       [columnValue]: [comparisonValue, numberValue],
     }));
     console.log(columnValue);
@@ -62,6 +62,10 @@ export default function FilterProvider({ children }) {
       return newOptions;
     });
   };
+
+  // functions bellow to be used to remove a single filter
+
+  const handleRemove = (column) => setNumericFilter(({ [column]: bye, ...rest }) => rest);
 
   const handleClear = () => {
     if (Object.keys(numericFilter).length === 0) return;
@@ -76,11 +80,10 @@ export default function FilterProvider({ children }) {
     setNameFilter,
     setColumnOptions,
     setColumnValue,
-    handleFilter,
-    handleClear,
     setComparisonValue,
     setNumberValue,
   };
+
   const values = {
     allColumnOptions,
     filteredPlanets,
@@ -88,8 +91,14 @@ export default function FilterProvider({ children }) {
     columnValue,
   };
 
+  const handlers = {
+    handleFilter,
+    handleClear,
+    handleRemove,
+  };
+
   return (
-    <FilterContext.Provider value={ { setters, values } }>
+    <FilterContext.Provider value={ { setters, values, handlers } }>
       {children}
     </FilterContext.Provider>
   );

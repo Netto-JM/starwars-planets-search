@@ -4,13 +4,12 @@ import FilterContext from '../context/FilterContext';
 
 function Table() {
   const { isLoading, error, headings } = useContext(PlanetsContext);
-  const { setters, values } = useContext(FilterContext);
+  const { setters, values, handlers } = useContext(FilterContext);
   const { filteredPlanets, columnOptions, columnValue } = values;
+  const { handleFilter, handleClear } = handlers;
   const {
     setNameFilter,
     setColumnValue,
-    handleFilter,
-    handleClear,
     setComparisonValue,
     setNumberValue,
   } = setters;
