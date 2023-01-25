@@ -58,6 +58,8 @@ export default function FilterProvider({ children }) {
     setFilteredPlanets(filteredByNumbers);
   }, [nameFilter, numericFilter, planets]);
 
+  useEffect(() => { setColumnValue(columnOptions[0]); }, [columnOptions]);
+
   const handleFilter = () => {
     setNumericFilter((prevState) => ({
       ...prevState,
@@ -79,8 +81,6 @@ export default function FilterProvider({ children }) {
     setNumericFilter({});
     setColumnOptions(allColumnOptions);
   };
-
-  useEffect(() => { setColumnValue(columnOptions[0]); }, [columnOptions]);
 
   const setters = {
     setNameFilter,
