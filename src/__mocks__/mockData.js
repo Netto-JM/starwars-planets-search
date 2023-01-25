@@ -7,7 +7,7 @@ const films4 = 'https://swapi.dev/api/films/4/';
 const films5 = 'https://swapi.dev/api/films/5/';
 const films6 = 'https://swapi.dev/api/films/6/';
 
-const fetchResponse = {
+const mockData = {
   count: 60,
   next: 'https://swapi.dev/api/planets/?page=2',
   previous: null,
@@ -246,4 +246,4 @@ const fetchResponse = {
   ],
 };
 
-export default fetchResponse;
+export default mockData;
