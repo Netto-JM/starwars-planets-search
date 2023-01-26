@@ -6,6 +6,13 @@ import { renderWithContext } from './helpers/renderWithContext';
 
 
 describe('Testes dos componentes <Table.jsx /> e <Filter.jsx />', () => {
+  const loadInitialData = async () => {
+    renderWithContext(<App />);
+    await screen.findByRole('table');
+    await screen.findAllByRole('columnheader');
+    await screen.findAllByRole('row');
+  }
+
   beforeEach(() => {
     global.fetch = mockFetch;
   });
@@ -19,6 +26,9 @@ describe('Testes dos componentes <Table.jsx /> e <Filter.jsx />', () => {
     const table = await screen.findByRole('table');
     expect(table).toBeInTheDocument();
     const tableHeaders = await screen.findAllByRole('columnheader');
-    expect(tableHeaders).toHaveLength(13)
+    expect(tableHeaders).toHaveLength(13);
+    const tableRows = screen.getAllByRole('row');
+    expect(tableRows).toHaveLength(11);
+
   });
 });

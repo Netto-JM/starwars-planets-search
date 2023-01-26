@@ -11,6 +11,7 @@ export default function FilterProvider({ children }) {
   const [comparisonValue, setComparisonValue] = useState('maior que');
   const [numberValue, setNumberValue] = useState(0);
   const [numericFilter, setNumericFilter] = useState({});
+  const [usingFilter, setUsingFilter] = useState(true);
 
   const allColumnOptions = [
     'population',
@@ -56,6 +57,7 @@ export default function FilterProvider({ children }) {
     const filteredByName = byName(planets, nameFilter);
     const filteredByNumbers = byNumbers(filteredByName, numericFilter);
     setFilteredPlanets(filteredByNumbers);
+    setUsingFilter(!!(nameFilter || Object.keys(numericFilter).length));
   }, [nameFilter, numericFilter, planets]);
 
   useEffect(() => { setColumnValue(columnOptions[0]); }, [columnOptions]);
@@ -97,6 +99,7 @@ export default function FilterProvider({ children }) {
     columnValue,
     numberValue,
     numericFilter,
+    usingFilter,
   };
 
   const handlers = {
