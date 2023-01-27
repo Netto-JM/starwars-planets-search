@@ -102,4 +102,20 @@ describe('Testes dos componentes <Table.jsx /> e <Filter.jsx />', () => {
     userEvent.click(removeFiltersButton);
     expect(screen.getAllByRole('row')).toHaveLength(11);
   });
+
+  it('testa se a ordenação por valores numéricos funciona corretamente', async () => {
+    await loadInitialData();
+    const orderButton = screen.getByRole('button', {
+      name: /ordenar/i,
+    });
+    const columnInput = screen.getByRole('combobox', {
+      name: /ordenar:/i,
+    });
+    const ascOption = screen.getByRole('radio', {
+      name: /ascendente/i,
+    })
+    const descOption = screen.getByRole('radio', {
+      name: /descendente/i,
+    })
+  });
 });
