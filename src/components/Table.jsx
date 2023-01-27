@@ -14,7 +14,10 @@ function Table() {
 
   const tableData = planetsToRender.map((planet) => {
     const data = Object.values(planet);
-    const planetData = data.map((value, index) => <td key={ value + index }>{value}</td>);
+    const planetData = data.map((value, i) => {
+      if (i === 0) return <td key={ value + i } data-testid="planet-name">{value}</td>;
+      return <td key={ value + i }>{value}</td>;
+    });
     return <tr key={ JSON.stringify(data) }>{planetData}</tr>;
   });
 
