@@ -1,14 +1,16 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 import mockFetch from '../__mocks__/mockFetch';
-import { renderWithContext } from './helpers/renderWithContext';
+import {
+  renderWithContext
+} from './helpers/renderWithContext';
 
 
 describe('Testes dos componentes <Table.jsx /> e <Filter.jsx />', () => {
   const loadInitialData = async () => {
-    renderWithContext(<App />);
+    renderWithContext( < App / > );
     await screen.findByRole('table');
     await screen.findAllByRole('columnheader');
     await screen.findAllByRole('row');
@@ -23,7 +25,7 @@ describe('Testes dos componentes <Table.jsx /> e <Filter.jsx />', () => {
   });
 
   it('testa se os dados iniciais do componente <Table.jsx /> são carregados corretamente', async () => {
-    renderWithContext(<App />);
+    renderWithContext( < App / > );
     const table = await screen.findByRole('table');
     expect(table).toBeInTheDocument();
     const tableHeaders = await screen.findAllByRole('columnheader');
@@ -35,7 +37,7 @@ describe('Testes dos componentes <Table.jsx /> e <Filter.jsx />', () => {
   it('testa se o filtro de nome funciona e é case-sensitive', async () => {
     await loadInitialData();
     const nameInput = screen.getByTestId('name-filter');
-    
+
     userEvent.type(nameInput, 'oO');
     expect(screen.getAllByRole('row')).toHaveLength(3);
     const tatooineName = screen.getByRole('cell', {
@@ -56,5 +58,48 @@ describe('Testes dos componentes <Table.jsx /> e <Filter.jsx />', () => {
     expect(bespinName).toBeInTheDocument();
     expect(tatooineName).not.toBeInTheDocument();
     expect(nabooName).not.toBeInTheDocument();
-});
+  });
+
+  it('testa se o filtro por valores numéricos funciona corretamente', async () => {
+    await loadInitialData();
+    const filterButton = screen.getByRole('button', {
+      name: /filtrar/i,
+    });
+    const columnInput = screen.getByRole('combobox', {
+      name: /coluna:/i,
+    });
+    const comparisonInput = screen.getByRole('combobox', {
+      name: /operador:/i,
+    });
+    const removeFiltersButton = screen.getByRole('button', {
+      name: /remover filtros/i,
+    });
+    const valueInput = screen.getByTestId('value-filter');
+
+    userEvent.selectOptions(columnInput, 'diameter');
+    userEvent.selectOptions(comparisonInput, 'maior que');
+    fireEvent.change(valueInput, { target: { value: '10000' } });
+    userEvent.click(filterButton)
+    expect(screen.getAllByRole('row')).toHaveLength(8);
+
+    userEvent.selectOptions(columnInput, 'orbital_period');
+    userEvent.selectOptions(comparisonInput, 'menor que');
+    fireEvent.change(valueInput, { target: { value: '500' } });
+    userEvent.click(filterButton)
+    expect(screen.getAllByRole('row')).toHaveLength(6);
+
+    userEvent.selectOptions(columnInput, 'rotation_period');
+    userEvent.selectOptions(comparisonInput, 'igual a');
+    fireEvent.change(valueInput, { target: { value: '24' } });
+    userEvent.click(filterButton)
+    expect(screen.getAllByRole('row')).toHaveLength(3);
+
+    userEvent.click(screen.getByTestId('remove-orbital_period'));
+    expect(screen.getAllByRole('row')).toHaveLength(4);
+
+    userEvent.click(removeFiltersButton);
+    expect(screen.getAllByRole('row')).toHaveLength(11);
+    userEvent.click(removeFiltersButton);
+    expect(screen.getAllByRole('row')).toHaveLength(11);
+  });
 });
