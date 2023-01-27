@@ -16,7 +16,12 @@ function Filter() {
     const SingleFilterEl = (
       <div data-testid="filter" key={ column }>
         <p>{`${column} ${comparison} ${number}`}</p>
-        <button onClick={ () => { handleRemove(column); } }>X</button>
+        <button
+          onClick={ () => { handleRemove(column); } }
+          data-testid={ `remove-${column}` }
+        >
+          X
+        </button>
       </div>
     );
     return SingleFilterEl;
@@ -53,7 +58,7 @@ function Filter() {
         Operador:
         <select
           name="comparison"
-          id="column"
+          id="comparison"
           data-testid="comparison-filter"
           onChange={ ({ target }) => { setComparisonValue(target.value); } }
         >
