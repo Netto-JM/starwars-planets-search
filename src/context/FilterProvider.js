@@ -8,10 +8,13 @@ export default function FilterProvider({ children }) {
   const [filteredPlanets, setFilteredPlanets] = useState([]);
   const { planets } = useContext(PlanetsContext);
   const [columnValue, setColumnValue] = useState('population');
+  const [orderColumnValue, setOrderColumnValue] = useState('population');
+  const [orderOptionValue, setOrderOptionValue] = useState('ASC');
+  const [orderFilter, setOrderFilter] = useState({});
   const [comparisonValue, setComparisonValue] = useState('maior que');
   const [numberValue, setNumberValue] = useState(0);
   const [numericFilter, setNumericFilter] = useState({});
-  const [usingFilter, setUsingFilter] = useState(true);
+  const [usingFilter, setUsingFilter] = useState(false);
 
   const allColumnOptions = [
     'population',
@@ -22,6 +25,8 @@ export default function FilterProvider({ children }) {
   ];
 
   const [columnOptions, setColumnOptions] = useState(allColumnOptions);
+
+  const isEmptyObj = (object) => !(Object.entries(object).length);
 
   const byName = (SWPlanets, letters) => (
     SWPlanets.filter(({ name }) => (
@@ -46,6 +51,7 @@ export default function FilterProvider({ children }) {
   };
 
   const byNumbers = (SWPlanets, numFilter) => {
+    if (isEmptyObj(numFilter)) return SWPlanets;
     const numFilterArr = Object.entries(numFilter);
     const byNumPlanets = numFilterArr.reduce((thePlanets, filterValues) => (
       filterByNumbers(thePlanets, filterValues[0], filterValues[1][0], filterValues[1][1])
@@ -53,12 +59,30 @@ export default function FilterProvider({ children }) {
     return byNumPlanets;
   };
 
+  const orderPlanets = (SWPlanets, ordFilter) => {
+    if (isEmptyObj(ordFilter)) return SWPlanets;
+    const MINUS_ONE = -1;
+    const orderedPlanets = [...SWPlanets];
+    const [column, by] = Object.entries(ordFilter)[0];
+    orderedPlanets.sort((planetA, planetB) => {
+      if (planetB[column] === 'unknown') return MINUS_ONE;
+      if (by === 'ASC') {
+        return +planetA[column] - +planetB[column];
+      }
+      return +planetB[column] - +planetA[column];
+    });
+    return orderedPlanets;
+  };
+
   useEffect(() => {
     const filteredByName = byName(planets, nameFilter);
     const filteredByNumbers = byNumbers(filteredByName, numericFilter);
-    setFilteredPlanets(filteredByNumbers);
-    setUsingFilter(!!(nameFilter || Object.keys(numericFilter).length));
-  }, [nameFilter, numericFilter, planets]);
+    const orderedPlanets = orderPlanets(filteredByNumbers, orderFilter);
+    setFilteredPlanets(orderedPlanets);
+    setUsingFilter((prevState) => (
+      prevState || !!(nameFilter || Object.keys(numericFilter).length)
+    ));
+  }, [nameFilter, numericFilter, planets, orderFilter]);
 
   useEffect(() => { setColumnValue(columnOptions[0]); }, [columnOptions]);
 
@@ -84,10 +108,17 @@ export default function FilterProvider({ children }) {
     setColumnOptions(allColumnOptions);
   };
 
+  const handleOrder = () => {
+    setOrderFilter({ [orderColumnValue]: orderOptionValue });
+    setUsingFilter(true);
+  };
+
   const setters = {
     setNameFilter,
     setColumnOptions,
     setColumnValue,
+    setOrderColumnValue,
+    setOrderOptionValue,
     setComparisonValue,
     setNumberValue,
   };
@@ -97,6 +128,8 @@ export default function FilterProvider({ children }) {
     filteredPlanets,
     columnOptions,
     columnValue,
+    orderColumnValue,
+    orderOptionValue,
     numberValue,
     numericFilter,
     usingFilter,
@@ -106,6 +139,7 @@ export default function FilterProvider({ children }) {
     handleFilter,
     handleClear,
     handleRemove,
+    handleOrder,
   };
 
   return (
