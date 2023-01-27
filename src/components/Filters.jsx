@@ -2,15 +2,25 @@ import React, { useContext } from 'react';
 import FilterContext from '../context/FilterContext';
 
 function Filter() {
-  const { setters, values, handlers } = useContext(FilterContext);
-  const { columnOptions, columnValue, numericFilter, numberValue } = values;
-  const { handleFilter, handleClear, handleRemove } = handlers;
+  const { values, setters, handlers } = useContext(FilterContext);
+  const {
+    columnOptions,
+    columnValue,
+    orderColumnValue,
+    orderOptionValue,
+    numericFilter,
+    numberValue,
+    allColumnOptions,
+  } = values;
   const {
     setNameFilter,
     setColumnValue,
+    setOrderColumnValue,
+    setOrderOptionValue,
     setComparisonValue,
     setNumberValue,
   } = setters;
+  const { handleFilter, handleClear, handleRemove, handleOrder } = handlers;
 
   const buildSingleFilterEl = (column, comparison, number) => {
     const SingleFilterEl = (
@@ -32,7 +42,11 @@ function Filter() {
   ));
 
   const columnFilterOptions = columnOptions.map((option) => (
-    <option key={ option } value={ option }>{option}</option>
+    <option key={ `filter-${option}` } value={ option }>{option}</option>
+  ));
+
+  const columnOrderOptions = allColumnOptions.map((option) => (
+    <option key={ `order-${option}` } value={ option }>{option}</option>
   ));
 
   return (
@@ -42,11 +56,11 @@ function Filter() {
         data-testid="name-filter"
         onChange={ ({ target }) => { setNameFilter(target.value); } }
       />
-      <label htmlFor="column">
+      <label htmlFor="column-filter">
         Coluna:
         <select
-          name="column"
-          id="column"
+          name="column-filter"
+          id="column-filter"
           data-testid="column-filter"
           value={ columnValue }
           onChange={ ({ target }) => { setColumnValue(target.value); } }
@@ -75,6 +89,45 @@ function Filter() {
       />
       <button type="button" data-testid="button-filter" onClick={ handleFilter }>
         FILTRAR
+      </button>
+      <label htmlFor="column-sort">
+        Ordenar:
+        <select
+          name="column-sort"
+          id="column-sort"
+          data-testid="column-sort"
+          value={ orderColumnValue }
+          onChange={ ({ target }) => { setOrderColumnValue(target.value); } }
+        >
+          {columnOrderOptions}
+        </select>
+      </label>
+      <label htmlFor="ASC">
+        <input
+          type="radio"
+          id="ASC"
+          name="order-option"
+          value="ASC"
+          checked={ orderOptionValue === 'ASC' }
+          onClick={ () => setOrderOptionValue('ASC') }
+          data-testid="column-sort-input-asc"
+        />
+        Ascendente
+      </label>
+      <label htmlFor="DESC">
+        <input
+          type="radio"
+          id="DESC"
+          name="order-option"
+          value="DESC"
+          checked={ orderOptionValue === 'DESC' }
+          onClick={ () => setOrderOptionValue('DESC') }
+          data-testid="column-sort-input-desc"
+        />
+        Descendente
+      </label>
+      <button type="button" data-testid="column-sort-button" onClick={ handleOrder }>
+        ORDENAR
       </button>
       <button type="button" data-testid="button-remove-filters" onClick={ handleClear }>
         REMOVER FILTROS
