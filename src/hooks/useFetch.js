@@ -15,12 +15,18 @@ function useFetch(url, filterData = (data) => (data), initialData = []) {
     if (!url) return;
 
     const handleError = ({ ok, status }, apiResponse) => {
-      if (!ok) {
-        const apiError = new Error(
-          `The endpoint ${url} responded with status code: ${status}`,
-        );
-        apiError.response = apiResponse;
-        throw apiError;
+      try {
+        if (!ok) {
+          const apiError = new Error(
+            `The endpoint ${url} responded with status code: ${status}`,
+          );
+          apiError.response = apiResponse;
+          throw apiError;
+        }
+      } catch (e) {
+        setError(e);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -32,19 +38,13 @@ function useFetch(url, filterData = (data) => (data), initialData = []) {
 
     const fetchData = async () => {
       setIsLoading(true);
-      try {
-        if (cache.current[url]) {
-          const cachedResponse = cache.current[url];
-          return handleResponse(cachedResponse);
-        }
-        const response = await fetch(url);
-        cache.current[url] = response;
-        return handleResponse(response);
-      } catch (e) {
-        setError(e);
-      } finally {
-        setIsLoading(false);
-      }
+      // if (cache.current[url]) { *comment for test purposes
+      //   const cachedResponse = cache.current[url];
+      //   return handleResponse(cachedResponse);
+      // }
+      const response = await fetch(url);
+      cache.current[url] = response;
+      return handleResponse(response);
     };
     fetchData()
       .then(filterData)
