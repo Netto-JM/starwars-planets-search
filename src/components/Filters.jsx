@@ -109,7 +109,7 @@ function Filter() {
           name="order-option"
           value="ASC"
           checked={ orderOptionValue === 'ASC' }
-          onClick={ () => setOrderOptionValue('ASC') }
+          onChange={ () => setOrderOptionValue('ASC') }
           data-testid="column-sort-input-asc"
         />
         Ascendente
@@ -121,7 +121,7 @@ function Filter() {
           name="order-option"
           value="DESC"
           checked={ orderOptionValue === 'DESC' }
-          onClick={ () => setOrderOptionValue('DESC') }
+          onChange={ () => setOrderOptionValue('DESC') }
           data-testid="column-sort-input-desc"
         />
         Descendente
