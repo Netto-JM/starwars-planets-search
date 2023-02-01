@@ -41,10 +41,8 @@ export default function FilterProvider({ children }) {
         return +planet[column] > +number;
       case 'menor que':
         return +planet[column] < +number;
-      case 'igual a':
-        return +planet[column] === +number;
       default:
-        return true;
+        return +planet[column] === +number;
       }
     });
     return byNumberPlanets;
