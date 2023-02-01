@@ -3,10 +3,11 @@ import PlanetsContext from './context/PlanetsContext';
 import './App.css';
 import Filter from './components/Filters';
 import Table from './components/Table';
+import Error from './components/Error';
 
 function App() {
-  const { isLoading, error } = useContext(PlanetsContext);
-  console.log('render table conditionally:', isLoading, error);
+  const { error } = useContext(PlanetsContext);
+  if (error) return <Error />;
   return (
     <>
       <Filter />
