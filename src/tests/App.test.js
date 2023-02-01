@@ -2,22 +2,23 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
-import mockFetch from '../__mocks__/mockFetch';
+import { mockFetchResolved, mockFetchRejected } from '../__mocks__/mockFetch';
 import {
   renderWithContext
 } from './helpers/renderWithContext';
+import { act } from 'react-dom/test-utils';
 
 
 describe('Testes dos componentes <Table.jsx /> e <Filter.jsx />', () => {
   const loadInitialData = async () => {
-    renderWithContext( < App / > );
+    renderWithContext(< App/>);
     await screen.findByRole('table');
     await screen.findAllByRole('columnheader');
     await screen.findAllByRole('row');
   }
 
   beforeEach(() => {
-    global.fetch = mockFetch;
+    global.fetch = mockFetchResolved;
   });
 
   afterEach(() => {
@@ -25,7 +26,7 @@ describe('Testes dos componentes <Table.jsx /> e <Filter.jsx />', () => {
   });
 
   it('testa se os dados iniciais do componente <Table.jsx /> são carregados corretamente', async () => {
-    renderWithContext( < App / > );
+    renderWithContext(< App/>);
     const table = await screen.findByRole('table');
     expect(table).toBeInTheDocument();
     const tableHeaders = await screen.findAllByRole('columnheader');
@@ -117,5 +118,45 @@ describe('Testes dos componentes <Table.jsx /> e <Filter.jsx />', () => {
     const descOption = screen.getByRole('radio', {
       name: /descendente/i,
     })
+
+    userEvent.selectOptions(columnInput, 'diameter');
+    userEvent.click(descOption);
+    userEvent.click(orderButton);
+    const orderedByDiameterDesc = screen.getAllByRole('row');
+    expect(orderedByDiameterDesc[1]).toHaveTextContent(/Bespin/);
+    expect(orderedByDiameterDesc[2]).toHaveTextContent(/Kamino/);
+    expect(orderedByDiameterDesc[3]).toHaveTextContent(/Alderaan/);
+    expect(orderedByDiameterDesc[4]).toHaveTextContent(/Coruscant/);
+    expect(orderedByDiameterDesc[5]).toHaveTextContent(/Naboo/);
+    expect(orderedByDiameterDesc[6]).toHaveTextContent(/Tatooine/);
+    expect(orderedByDiameterDesc[7]).toHaveTextContent(/Yavin IV/);
+    expect(orderedByDiameterDesc[8]).toHaveTextContent(/Dagobah/);
+    expect(orderedByDiameterDesc[9]).toHaveTextContent(/Hoth/);
+    expect(orderedByDiameterDesc[10]).toHaveTextContent(/Endor/);
+
+    userEvent.selectOptions(columnInput, 'population');
+    userEvent.click(ascOption);
+    userEvent.click(orderButton);
+    const orderedByPopulationAsc = screen.getAllByRole('row');
+    expect(orderedByPopulationAsc).toHaveLength(11);
+    expect(orderedByPopulationAsc[1]).toHaveTextContent(/Yavin IV/);
+    expect(orderedByPopulationAsc[2]).toHaveTextContent(/Tatooine/);
+    expect(orderedByPopulationAsc[3]).toHaveTextContent(/Bespin/);
+    expect(orderedByPopulationAsc[4]).toHaveTextContent(/Endor/);
+    expect(orderedByPopulationAsc[5]).toHaveTextContent(/Kamino/);
+    expect(orderedByPopulationAsc[6]).toHaveTextContent(/Alderaan/);
+    expect(orderedByPopulationAsc[7]).toHaveTextContent(/Naboo/);
+    expect(orderedByPopulationAsc[8]).toHaveTextContent(/Coruscant/);
+    expect(orderedByPopulationAsc[9]).toHaveTextContent(/Dagobah/);
+    expect(orderedByPopulationAsc[10]).toHaveTextContent(/Hoth/);
+  });
+
+  it('testa se o componente de erro <Error.jsx /> é carregado em caso de erro', async () => {
+    global.fetch = mockFetchRejected;
+    act(() => {
+      renderWithContext(< App/>);
+    });
+    const error = await screen.findByText('Error');
+    expect(error).toBeInTheDocument();
   });
 });
