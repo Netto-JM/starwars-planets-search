@@ -37,12 +37,9 @@ export default function FilterProvider({ children }) {
   const filterByNumbers = (SWPlanets, column, comparison, number) => {
     const byNumberPlanets = SWPlanets.filter((planet) => {
       switch (comparison) {
-      case 'maior que':
-        return +planet[column] > +number;
-      case 'menor que':
-        return +planet[column] < +number;
-      default:
-        return +planet[column] === +number;
+      case 'maior que': return +planet[column] > +number;
+      case 'menor que': return +planet[column] < +number;
+      default: return +planet[column] === +number;
       }
     });
     return byNumberPlanets;
