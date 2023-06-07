@@ -1,4 +1,4 @@
-import testData from '../../cypress/mocks/testData';
+import testData from './testData';
 
 export const mockFetchResolved = () => Promise.resolve({
   status: 200,
